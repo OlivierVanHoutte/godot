@@ -61,6 +61,31 @@ void MeshLibraryEditor::_menu_confirm() {
 			_import_scene_cbk(existing);
 
 		} break;
+		case MENU_OPTION_UPDATE_PREVIEWS: {
+
+			if (1) {
+				
+				Vector<Ref<Mesh> > meshes;
+				Vector<Transform> transforms;
+				Vector<int> ids = mesh_library->get_item_list();
+				for (int i = 0; i < ids.size(); i++) {
+
+					meshes.push_back(mesh_library->get_item_mesh(ids[i]));
+					transforms.push_back(Transform());
+					
+				}
+
+				Vector<Ref<Texture> > textures = EditorInterface::get_singleton()->make_mesh_previews(meshes, &transforms, EditorSettings::get_singleton()->get("editors/grid_map/preview_size"));
+				int j = 0;
+				for (int i = 0; i < ids.size(); i++) {
+
+					mesh_library->set_item_preview(ids[i], textures[j]);
+					j++;
+					
+				}
+				print_line("DONZO");
+			}
+		} break;
 		default: {
 		};
 	}
@@ -244,6 +269,29 @@ void MeshLibraryEditor::_menu_cbk(int p_option) {
 			cd->set_text(vformat(TTR("Update from existing scene?:\n%s"), String(mesh_library->get_meta("_editor_source_scene"))));
 			cd->popup_centered(Size2(500, 60));
 		} break;
+		case MENU_OPTION_UPDATE_PREVIEWS: {
+
+			if (1) {
+
+				Vector<Ref<Mesh> > meshes;
+				Vector<Transform> transforms;
+				Vector<int> ids = mesh_library->get_item_list();
+				for (int i = 0; i < ids.size(); i++) {
+
+					meshes.push_back(mesh_library->get_item_mesh(ids[i]));
+					transforms.push_back(Transform());
+				}
+
+				Vector<Ref<Texture> > textures = EditorInterface::get_singleton()->make_mesh_previews(meshes, &transforms, EditorSettings::get_singleton()->get("editors/grid_map/preview_size"));
+				int j = 0;
+				for (int i = 0; i < ids.size(); i++) {
+
+					mesh_library->set_item_preview(ids[i], textures[j]);
+					j++;
+				}
+				print_line("DONZO");
+			}
+		} break;
 	}
 }
 
@@ -280,6 +328,7 @@ MeshLibraryEditor::MeshLibraryEditor(EditorNode *p_editor) {
 	menu->get_popup()->add_separator();
 	menu->get_popup()->add_item(TTR("Import from Scene"), MENU_OPTION_IMPORT_FROM_SCENE);
 	menu->get_popup()->add_item(TTR("Update from Scene"), MENU_OPTION_UPDATE_FROM_SCENE);
+	menu->get_popup()->add_item(TTR("Update previews"), MENU_OPTION_UPDATE_PREVIEWS);
 	menu->get_popup()->set_item_disabled(menu->get_popup()->get_item_index(MENU_OPTION_UPDATE_FROM_SCENE), true);
 	menu->get_popup()->connect("id_pressed", this, "_menu_cbk");
 	menu->hide();

@@ -30,6 +30,35 @@
 
 #include "mesh_library.h"
 
+void MeshLibrary::set_item_count(int i) {
+	int t = item_map.size();
+	item_count = i;
+	while (item_map.size() < item_count) {
+		if (!item_map.has(t))
+			create_item(t);
+		else
+			t++;
+	}
+
+	while (item_map.size() > item_count) {
+		int k = item_map.back()->key();
+		item_map.erase(k);
+	}
+	_change_notify();
+};
+int MeshLibrary::get_item_count() const {
+	return item_count;
+};
+
+GridcellType MeshLibrary::get_item_celltype(int i){
+	return item_map[i].cell_type;
+}
+void MeshLibrary::set_item_celltype(int i, GridcellType ct){
+	item_map[i].cell_type = ct;
+}
+
+//////////////
+
 bool MeshLibrary::_set(const StringName &p_name, const Variant &p_value) {
 
 	String name = p_name;
@@ -62,37 +91,46 @@ bool MeshLibrary::_set(const StringName &p_name, const Variant &p_value) {
 			return false;
 
 		return true;
+	}else{
+		if (name == "items"){
+			set_item_count(p_value);
+		}
 	}
 
 	return false;
 }
 
 bool MeshLibrary::_get(const StringName &p_name, Variant &r_ret) const {
-
 	String name = p_name;
-	int idx = name.get_slicec('/', 1).to_int();
-	ERR_FAIL_COND_V(!item_map.has(idx), false);
-	String what = name.get_slicec('/', 2);
+	if (name == "items"){
+		r_ret = get_item_count();
+		return true;
+	} else {
+		int idx = name.get_slicec('/', 1).to_int();
+		ERR_FAIL_COND_V(!item_map.has(idx), false);
+		String what = name.get_slicec('/', 2);
 
-	if (what == "name")
-		r_ret = get_item_name(idx);
-	else if (what == "mesh")
-		r_ret = get_item_mesh(idx);
-	else if (what == "shapes")
-		r_ret = _get_item_shapes(idx);
-	else if (what == "navmesh")
-		r_ret = get_item_navmesh(idx);
-	else if (what == "navmesh_transform")
-		r_ret = get_item_navmesh_transform(idx);
-	else if (what == "preview")
-		r_ret = get_item_preview(idx);
-	else
-		return false;
-
+		if (what == "name")
+			r_ret = get_item_name(idx);
+		else if (what == "mesh")
+			r_ret = get_item_mesh(idx);
+		else if (what == "shapes")
+			r_ret = _get_item_shapes(idx);
+		else if (what == "navmesh")
+			r_ret = get_item_navmesh(idx);
+		else if (what == "navmesh_transform")
+			r_ret = get_item_navmesh_transform(idx);
+		else if (what == "preview")
+			r_ret = get_item_preview(idx);
+		else
+			return false;
+	}
 	return true;
 }
 
 void MeshLibrary::_get_property_list(List<PropertyInfo> *p_list) const {
+	
+	p_list->push_back(PropertyInfo(Variant::INT, "items"));
 
 	for (Map<int, Item>::Element *E = item_map.front(); E; E = E->next()) {
 
@@ -307,6 +345,8 @@ void MeshLibrary::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("clear"), &MeshLibrary::clear);
 	ClassDB::bind_method(D_METHOD("get_item_list"), &MeshLibrary::get_item_list);
 	ClassDB::bind_method(D_METHOD("get_last_unused_item_id"), &MeshLibrary::get_last_unused_item_id);
+
+
 }
 
 MeshLibrary::MeshLibrary() {

@@ -47,7 +47,7 @@ class GridMap : public Spatial {
 		MAP_DIRTY_TRANSFORMS = 1,
 		MAP_DIRTY_INSTANCES = 2,
 	};
-
+public:
 	union IndexKey {
 
 		struct {
@@ -64,7 +64,7 @@ class GridMap : public Spatial {
 
 		IndexKey() { key = 0; }
 	};
-
+private:
 	/**
 	 * @brief A Cell is a single cell in the cube map space; it is defined by its coordinates and the populating Item, identified by int id.
 	 */
@@ -156,8 +156,9 @@ class GridMap : public Spatial {
 	bool recreating_octants;
 
 	Vector3::Axis clip_axis;
-
+public:
 	Ref<MeshLibrary> mesh_library;
+private:
 	bool use_in_baked_light;
 
 	Map<OctantKey, Octant *> octant_map;

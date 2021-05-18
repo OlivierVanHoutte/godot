@@ -209,6 +209,7 @@
 #include "scene/animation/skeleton_ik.h"
 #include "scene/resources/environment.h"
 #include "scene/resources/mesh_library.h"
+#include "modules\mygrid\mygrid.h"
 #endif
 
 static Ref<ResourceFormatSaverText> resource_saver_text;

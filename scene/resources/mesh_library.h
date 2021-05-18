@@ -37,6 +37,10 @@
 #include "scene/3d/navigation_mesh.h"
 #include "shape.h"
 
+enum GridcellType { solid,
+	walkable
+};
+
 class MeshLibrary : public Resource {
 
 	GDCLASS(MeshLibrary, Resource);
@@ -48,6 +52,7 @@ public:
 		Transform local_transform;
 	};
 	struct Item {
+		GridcellType cell_type;
 		String name;
 		Ref<Mesh> mesh;
 		Vector<ShapeData> shapes;
@@ -69,6 +74,14 @@ protected:
 	static void _bind_methods();
 
 public:
+	int item_count;
+
+	void set_item_count(int i);
+	int get_item_count() const;
+
+	GridcellType get_item_celltype(int i);
+	void set_item_celltype(int i, GridcellType ct);
+
 	void create_item(int p_item);
 	void set_item_name(int p_item, const String &p_name);
 	void set_item_mesh(int p_item, const Ref<Mesh> &p_mesh);
@@ -97,4 +110,5 @@ public:
 	~MeshLibrary();
 };
 
+VARIANT_ENUM_CAST(GridcellType);
 #endif // CUBE_GRID_THEME_H
