@@ -46,14 +46,14 @@ void MyGrid::update_range(Vector3 start, int walk_range){
         add_in_range(key, bkey, q, walk_range);
 
 	}
-
+	/*
 	for (Map<IndexKey, DistanceTo>::Element * it = in_range.front(); true; it = it->next()) {
 		IndexKey ik = it->key();
 		set_cell_item(ik.x, ik.y, ik.z, 1);
 		if (it == in_range.back()){
 			break;
 		}
-	}
+	}*/
 }
 
 void MyGrid::add_in_range(IndexKey source, IndexKey target, vector<IndexKey> &q, float walk_range){
