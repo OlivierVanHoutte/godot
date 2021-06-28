@@ -64,7 +64,7 @@ public:
 
 		IndexKey() { key = 0; }
 	};
-private:
+protected:
 	/**
 	 * @brief A Cell is a single cell in the cube map space; it is defined by its coordinates and the populating Item, identified by int id.
 	 */
@@ -158,7 +158,7 @@ private:
 	Vector3::Axis clip_axis;
 public:
 	Ref<MeshLibrary> mesh_library;
-private:
+protected:
 	bool use_in_baked_light;
 
 	Map<OctantKey, Octant *> octant_map;
