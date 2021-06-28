@@ -5,7 +5,7 @@
 void MyGrid::_bind_methods() {
     BIND_ENUM_CONSTANT(solid);
     BIND_ENUM_CONSTANT(walkable);
-    ClassDB::bind_method(D_METHOD("get_path", "start", "end"), &MyGrid::get_path);
+	ClassDB::bind_method(D_METHOD("find_path", "start", "end"), &MyGrid::find_path);
 	ClassDB::bind_method(D_METHOD("update_range", "start", "walk_range"), &MyGrid::update_range);
 
 }
@@ -45,6 +45,14 @@ void MyGrid::update_range(Vector3 start, int walk_range){
         bkey.z--;
         add_in_range(key, bkey, q, walk_range);
 
+	}
+
+	for (Map<IndexKey, DistanceTo>::Element * it = in_range.front(); true; it = it->next()) {
+		IndexKey ik = it->key();
+		set_cell_item(ik.x, ik.y, ik.z, 1);
+		if (it == in_range.back()){
+			break;
+		}
 	}
 }
 
