@@ -1124,6 +1124,10 @@ msgstr "Đổi giá trị từ điển"
 msgid "Thanks from the Godot community!"
 msgstr "Cảm ơn từ cộng đồng Godot!"
 
+#: editor/editor_about.cpp editor/editor_node.cpp editor/project_manager.cpp
+msgid "Click to copy."
+msgstr ""
+
 #: editor/editor_about.cpp
 msgid "Godot Engine contributors"
 msgstr "Cá nhân đóng góp của Godot Engine"
@@ -2535,7 +2539,7 @@ msgstr "Không thể tải tệp addon từ đường dẫn: '%s'."
 #, fuzzy
 msgid ""
 "Unable to load addon script from path: '%s'. This might be due to a code "
-"error in that script. \n"
+"error in that script.\n"
 "Disabling the addon at '%s' to prevent further errors."
 msgstr ""
 "Không thể nạp tệp lệnh bổ trợ từ đường dẫn: '%s' Có vẻ có lỗi trong mã, hãy "
@@ -2969,6 +2973,10 @@ msgstr "Cộng đồng"
 #: editor/editor_node.cpp
 msgid "About"
 msgstr "Về chúng tôi"
+
+#: editor/editor_node.cpp
+msgid "Support Godot Development"
+msgstr ""
 
 #: editor/editor_node.cpp
 msgid "Play the project."
@@ -5172,16 +5180,7 @@ msgstr ""
 
 #: editor/plugins/baked_lightmap_editor_plugin.cpp
 msgid ""
-"Godot editor was built without ray tracing support; lightmaps can't be "
-"baked.\n"
-"If you are using an Apple Silicon-based Mac, try forcing Rosetta emulation "
-"on Godot.app in the application settings\n"
-"then restart the editor."
-msgstr ""
-
-#: editor/plugins/baked_lightmap_editor_plugin.cpp
-msgid ""
-"Godot editor was built without ray tracing support; lightmaps can't be baked."
+"Godot editor was built without ray tracing support, lightmaps can't be baked."
 msgstr ""
 
 #: editor/plugins/baked_lightmap_editor_plugin.cpp
@@ -10018,7 +10017,7 @@ msgstr "Nút chuột"
 
 #: editor/project_settings_editor.cpp
 msgid ""
-"Invalid action name. it cannot be empty nor contain '/', ':', '=', '\\' or "
+"Invalid action name. It cannot be empty nor contain '/', ':', '=', '\\' or "
 "'\"'"
 msgstr "Tên hành động không được trống hoặc chứa '/', ':', '=', '\\' hoặc '\"'"
 
@@ -12103,7 +12102,19 @@ msgstr ""
 "Dự Án."
 
 #: platform/android/export/export.cpp
+msgid ""
+"Either Debug Keystore, Debug User AND Debug Password settings must be "
+"configured OR none of them."
+msgstr ""
+
+#: platform/android/export/export.cpp
 msgid "Debug keystore not configured in the Editor Settings nor in the preset."
+msgstr ""
+
+#: platform/android/export/export.cpp
+msgid ""
+"Either Release Keystore, Release User AND Release Password settings must be "
+"configured OR none of them."
 msgstr ""
 
 #: platform/android/export/export.cpp

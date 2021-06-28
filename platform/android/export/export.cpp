@@ -862,7 +862,8 @@ class EditorExportPlatformAndroid : public EditorExportPlatform {
 		int version_code = p_preset->get("version/code");
 		String package_name = p_preset->get("package/unique_name");
 
-		const int screen_orientation = _get_android_orientation_value(_get_screen_orientation());
+		const int screen_orientation = _get_android_orientation_value(
+				OS::get_singleton()->get_screen_orientation_from_string(GLOBAL_GET("display/window/handheld/orientation")));
 
 		bool min_gles3 = ProjectSettings::get_singleton()->get("rendering/quality/driver/driver_name") == "GLES3" &&
 						 !ProjectSettings::get_singleton()->get("rendering/quality/driver/fallback_to_gles2");
@@ -1012,8 +1013,6 @@ class EditorExportPlatformAndroid : public EditorExportPlatform {
 							encode_uint32(min_gles3 ? 0x00030000 : 0x00020000, &p_manifest.write[iofs + 16]);
 						}
 
-						// FIXME: `attr_value != 0xFFFFFFFF` below added as a stopgap measure for GH-32553,
-						// but the issue should be debugged further and properly addressed.
 						if (tname == "meta-data" && attrname == "name" && value == "xr_mode_metadata_name") {
 							// Update the meta-data 'android:name' attribute based on the selected XR mode.
 							if (xr_mode_index == 1 /* XRMode.OVR */) {
@@ -2130,6 +2129,13 @@ public:
 		// Validate the rest of the configuration.
 
 		String dk = p_preset->get("keystore/debug");
+		String dk_user = p_preset->get("keystore/debug_user");
+		String dk_password = p_preset->get("keystore/debug_password");
+
+		if ((dk.empty() || dk_user.empty() || dk_password.empty()) && (!dk.empty() || !dk_user.empty() || !dk_password.empty())) {
+			valid = false;
+			err += TTR("Either Debug Keystore, Debug User AND Debug Password settings must be configured OR none of them.") + "\n";
+		}
 
 		if (!FileAccess::exists(dk)) {
 
@@ -2141,6 +2147,13 @@ public:
 		}
 
 		String rk = p_preset->get("keystore/release");
+		String rk_user = p_preset->get("keystore/release_user");
+		String rk_password = p_preset->get("keystore/release_password");
+
+		if ((rk.empty() || rk_user.empty() || rk_password.empty()) && (!rk.empty() || !rk_user.empty() || !rk_password.empty())) {
+			valid = false;
+			err += TTR("Either Release Keystore, Release User AND Release Password settings must be configured OR none of them.") + "\n";
+		}
 
 		if (!rk.empty() && !FileAccess::exists(rk)) {
 			valid = false;
