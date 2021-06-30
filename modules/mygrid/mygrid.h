@@ -42,8 +42,8 @@ public:
 	Ref<Material> get_basics_mat() const;
 
 	void update_autotile();
-
-
+	void hide_invisible_meshes();
+	void show_invisible_meshes();
 };
 
 bool is_equal(GridMap::IndexKey ik1, GridMap::IndexKey ik2);

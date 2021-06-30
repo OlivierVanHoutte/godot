@@ -12,6 +12,10 @@ void MyGrid::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_basics_library", "mesh_library"), &MyGrid::set_basics_library);
 	ClassDB::bind_method(D_METHOD("get_basics_library"), &MyGrid::get_basics_library);
 
+	ClassDB::bind_method(D_METHOD("hide_invisible_meshes"), &MyGrid::hide_invisible_meshes);
+	ClassDB::bind_method(D_METHOD("show_invisible_meshes"), &MyGrid::show_invisible_meshes);
+
+
 	ClassDB::bind_method(D_METHOD("set_basics_mat", "mesh_library"), &MyGrid::set_basics_mat);
 	ClassDB::bind_method(D_METHOD("get_basics_mat"), &MyGrid::get_basics_mat);
 
@@ -205,17 +209,123 @@ void MyGrid::update_autotile(){
 				multimesh_items[c.item] = List<Pair<Transform, IndexKey> >();
 			}
 
+			IndexKey left = E->key();
+			left.x -= 1;
+			IndexKey right = E->key();
+			right.x += 1;
+			IndexKey front = E->key();
+			front.z -= 1;
+			IndexKey back = E->key();
+			back.z += 1;
+
+			// Decide mesh indices
+			int count = 0;
+			bool l = false;
+			if (cell_map.has(left)){
+				l = (cell_map[left].item == 0);
+				count += int(l);
+			}
+			bool r = false;
+			if (cell_map.has(right)){
+				r = (cell_map[right].item == 0);
+				count += int(r);
+			}
+			bool f = false;
+			if (cell_map.has(front)){
+				f = (cell_map[front].item == 0);
+				count += int(f);
+			}
+			bool b = false;
+			if (cell_map.has(back)){
+				b = (cell_map[back].item == 0);
+				count += int(b);
+
+			}	
+			int rot_index = 0;
+			int grass_index = -1;
+			int wall_index = -1;
+			switch (count)
+			{
+			case 0:
+				grass_index = 5;
+				break;
+			case 1:
+				rot_index = int(b)*16 + int(f)*22 + int(r)*10;
+				grass_index = 3;
+				wall_index = 8;
+				break;
+			case 2:
+				if (l == r){
+					grass_index = 4;
+					wall_index = 9;
+					if (l){
+						rot_index = 0;
+					}else{
+						rot_index = 16;
+					}
+
+				}else{
+					grass_index = 2;
+					wall_index = 7;
+					rot_index = int(l && b)*16 + int(r && f)*22 + int(r && b)*10;
+				}
+				break;
+			case 3:
+				rot_index = int(!r)*16 + int(!l)*22 + int(!f)*10;
+				grass_index = 1;
+				wall_index = 6;
+				break;
+			case 4:
+				grass_index = 0;
+				wall_index = -1;
+				break;
+			default:
+				grass_index = 5;
+				wall_index = 10;
+				break;
+			}
+
+			IndexKey up = E->key();
+			up.y += 1;
+			if (cell_map.has(up)){
+				if (cell_map[up].item == 0){
+					grass_index = -1;
+
+				}
+			}
+		
 			Transform xform;
 
-			xform.basis.set_orthogonal_index(c.rot);
+			xform.basis.set_orthogonal_index(rot_index);
 			xform.set_origin(cellpos * cell_size + ofs);
 			xform.basis.scale(Vector3(cell_scale, cell_scale, cell_scale));
-
+			xform.translate(Vector3(0.0, -0.8, 0.0));
+			
 			Pair<Transform, GridMap::IndexKey> p;
 			p.first = xform; // transform
 			p.second = E->key(); // indexKey
-			multimesh_items[10].push_back(p);
-			multimesh_items[5].push_back(p);
+			if (grass_index >= 0){
+				multimesh_items[grass_index].push_back(p);
+			}
+			if (wall_index >= 0){
+				xform = xform.translated(Vector3(0.0, -0.001, 0.0));
+				Pair<Transform, GridMap::IndexKey> p1;
+				p1.first = xform; // transform
+				p1.second = E->key(); // indexKey
+				multimesh_items[wall_index].push_back(p1);
+				
+				if (xform.origin.y <= 1){
+					for (int i = 0; i < 4; i ++){
+						xform = xform.translated(Vector3(0.0, -1.6, 0.0));
+						Pair<Transform, GridMap::IndexKey> p2;
+						p2.first = xform; // transform
+						p2.second = E->key(); // indexKey
+						multimesh_items[wall_index].push_back(p2);
+					}
+				}
+
+			}
+
 		}
 	}
 
@@ -242,8 +352,22 @@ void MyGrid::update_autotile(){
 
 	}
 	
+}
 
+void MyGrid::hide_invisible_meshes(){
+	for (Map<OctantKey, Octant *>::Element *F = octant_map.front(); F; F = F->next()){
+		if (!(F->get()->multimesh_instances.empty())){
+			VS::get_singleton()->instance_set_visible ( F->get()->multimesh_instances[0].instance, false );
+		}
+	}
 
+}
 
+void MyGrid::show_invisible_meshes(){
+	for (Map<OctantKey, Octant *>::Element *F = octant_map.front(); F; F = F->next()){
+		if (!(F->get()->multimesh_instances.empty())){
+			VS::get_singleton()->instance_set_visible ( F->get()->multimesh_instances[0].instance, true );
+		}
+	}
 
 }
