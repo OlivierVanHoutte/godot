@@ -52,7 +52,7 @@ public:
 		Transform local_transform;
 	};
 	struct Item {
-		GridcellType cell_type;
+		GridcellType cell_type = solid;
 		String name;
 		Ref<Mesh> mesh;
 		Vector<ShapeData> shapes;

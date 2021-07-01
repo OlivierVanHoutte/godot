@@ -11,7 +11,6 @@
 
 using namespace std;
 
-
 class MyGrid : public GridMap {
 	GDCLASS(MyGrid, GridMap);
 
@@ -19,11 +18,15 @@ class MyGrid : public GridMap {
 		IndexKey source;
 		float distance;
 	};
+
+	Vector<Octant::MultimeshInstance> multimesh_instances;
+
 	Ref<MeshLibrary> basics_library;
 	Ref<Material> basics_material;
 	Map<IndexKey, DistanceTo> in_range;
 	IndexKey start_ik;
 	float range = 4.0;
+	bool showing_basics = false;
 protected:
 	static void _bind_methods();
 
@@ -44,6 +47,12 @@ public:
 	void update_autotile();
 	void hide_invisible_meshes();
 	void show_invisible_meshes();
+
+	void show_basics();
+	void hide_basics();
+	
+	void set_show_basics(bool t);
+	bool get_show_basics();
 };
 
 bool is_equal(GridMap::IndexKey ik1, GridMap::IndexKey ik2);

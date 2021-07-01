@@ -14,6 +14,8 @@ void MyGrid::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("hide_invisible_meshes"), &MyGrid::hide_invisible_meshes);
 	ClassDB::bind_method(D_METHOD("show_invisible_meshes"), &MyGrid::show_invisible_meshes);
+	ClassDB::bind_method(D_METHOD("hide_basics"), &MyGrid::get_show_basics);
+	ClassDB::bind_method(D_METHOD("show_basics"), &MyGrid::set_show_basics);
 
 
 	ClassDB::bind_method(D_METHOD("set_basics_mat", "mesh_library"), &MyGrid::set_basics_mat);
@@ -22,7 +24,7 @@ void MyGrid::_bind_methods() {
 	
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "basics_meshlib", PROPERTY_HINT_RESOURCE_TYPE, "MeshLibrary"), "set_basics_library", "get_basics_library");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "basics_material", PROPERTY_HINT_RESOURCE_TYPE, "Material"), "set_basics_mat", "get_basics_mat");
-
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "gen"), "show_basics", "hide_basics");
 }
 
 MyGrid::MyGrid() {
@@ -116,6 +118,7 @@ void MyGrid::add_in_range(IndexKey source, IndexKey target, vector<IndexKey> &q,
 				in_range[target].distance = new_dist;
 				in_range[target].source = source;
 				q.push_back(target);
+				//set_cell_item(target.x, target.y, target.z, 1);
 			}
 		}
 	}
@@ -124,8 +127,7 @@ void MyGrid::add_in_range(IndexKey source, IndexKey target, vector<IndexKey> &q,
 bool MyGrid::is_walkable(IndexKey key){
 	int i = get_cell_item(key.x, key.y, key.z);
 	if (mesh_library->has_item(i)) {
-		GridcellType cell_type = mesh_library->get_item_celltype(i);
-		if (cell_type == walkable){
+		if (mesh_library->get_item_celltype(i) == walkable){
 			key.y -= 1;
 			return is_solid(key);
 		}
@@ -139,8 +141,7 @@ bool MyGrid::is_walkable(IndexKey key){
 bool MyGrid::is_solid(IndexKey key) {
 	int i = get_cell_item(key.x, key.y, key.z);
 	if (mesh_library->has_item(i)) {
-		GridcellType cell_type = mesh_library->get_item_celltype(i);
-		return (cell_type == solid);
+		return ( mesh_library->get_item_celltype(i) == solid);
 	}
 	return false;
 }
@@ -190,6 +191,13 @@ bool is_equal(GridMap::IndexKey ik1, GridMap::IndexKey ik2){
 }
 
 void MyGrid::update_autotile(){
+
+	for (int i = 0; i < multimesh_instances.size(); i++) {
+
+		VS::get_singleton()->free(multimesh_instances[i].instance);
+		VS::get_singleton()->free(multimesh_instances[i].multimesh);
+	}
+	multimesh_instances.clear();
 
 	Map<int, List<Pair<Transform, GridMap::IndexKey> > > multimesh_items;
 
@@ -300,7 +308,7 @@ void MyGrid::update_autotile(){
 			xform.set_origin(cellpos * cell_size + ofs);
 			xform.basis.scale(Vector3(cell_scale, cell_scale, cell_scale));
 			xform.translate(Vector3(0.0, -0.8, 0.0));
-			
+
 			Pair<Transform, GridMap::IndexKey> p;
 			p.first = xform; // transform
 			p.second = E->key(); // indexKey
@@ -330,7 +338,7 @@ void MyGrid::update_autotile(){
 	}
 
 	for (Map<int, List<Pair<Transform, GridMap::IndexKey> > >::Element *E = multimesh_items.front(); E; E = E->next()) {
-		
+		Octant::MultimeshInstance mmi;
 		RID mm = VS::get_singleton()->multimesh_create();
 		VS::get_singleton()->multimesh_allocate(mm, E->get().size(), VS::MULTIMESH_TRANSFORM_3D, VS::MULTIMESH_COLOR_NONE);
 		basics_library->get_item_mesh(E->key())->surface_set_material(0, basics_material);
@@ -349,6 +357,10 @@ void MyGrid::update_autotile(){
 			VS::get_singleton()->instance_set_scenario(instance, get_world()->get_scenario());
 			VS::get_singleton()->instance_set_transform(instance, get_global_transform());
 		}
+
+		mmi.instance = instance;
+		mmi.multimesh = mm;
+		multimesh_instances.push_back(mmi);
 
 	}
 	
@@ -370,4 +382,32 @@ void MyGrid::show_invisible_meshes(){
 		}
 	}
 
+}
+
+void MyGrid::set_show_basics(bool t){
+	if (t){
+		show_basics();
+	}else{
+		hide_basics();
+	}
+	showing_basics = t;
+}
+
+bool MyGrid::get_show_basics(){
+	return showing_basics;
+}
+
+void MyGrid::show_basics(){
+	update_autotile();
+	hide_invisible_meshes();
+}
+
+void MyGrid::hide_basics(){
+	for (int i = 0; i < multimesh_instances.size(); i++) {
+
+		VS::get_singleton()->free(multimesh_instances[i].instance);
+		VS::get_singleton()->free(multimesh_instances[i].multimesh);
+	}
+	multimesh_instances.clear();
+	show_invisible_meshes();
 }
