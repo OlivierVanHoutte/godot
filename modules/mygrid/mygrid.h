@@ -53,6 +53,8 @@ public:
 	
 	void set_show_basics(bool t);
 	bool get_show_basics();
+
+	float get_ray_intersect(Vector3 start, Vector3 dir);
 };
 
 bool is_equal(GridMap::IndexKey ik1, GridMap::IndexKey ik2);

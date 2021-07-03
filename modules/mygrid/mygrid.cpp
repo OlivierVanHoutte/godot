@@ -21,7 +21,8 @@ void MyGrid::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_basics_mat", "mesh_library"), &MyGrid::set_basics_mat);
 	ClassDB::bind_method(D_METHOD("get_basics_mat"), &MyGrid::get_basics_mat);
 
-	
+	ClassDB::bind_method(D_METHOD("get_ray_intersect", "start", "dir"), &MyGrid::get_ray_intersect);
+
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "basics_meshlib", PROPERTY_HINT_RESOURCE_TYPE, "MeshLibrary"), "set_basics_library", "get_basics_library");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "basics_material", PROPERTY_HINT_RESOURCE_TYPE, "Material"), "set_basics_mat", "get_basics_mat");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "gen"), "show_basics", "hide_basics");
@@ -60,9 +61,10 @@ Ref<Material> MyGrid::get_basics_mat() const {
 }
 
 void MyGrid::update_range(Vector3 start, int walk_range){
-
+	range = walk_range;
+	in_range.clear();
 	vector<IndexKey> q = vector<IndexKey>();
-
+	
 	IndexKey key;
 	key.x = start.x;
 	key.y = start.y;
@@ -164,23 +166,23 @@ Vector<Vector3> MyGrid::find_path(Vector3 start, Vector3 end) {
 	e_ik.y = end.y;
 	e_ik.z = end.z;
 
-	cout << "start";
+	//cout << "start";
 	while (!is_equal(e_ik, s_ik)){
 		path.push_back(Vector3(e_ik.x, e_ik.y, e_ik.z));
 
 		if (in_range.has(e_ik)){
 			if (is_equal(e_ik, in_range[e_ik].source)){
-				cout << "aha";
+				//cout << "aha";
 				return Vector<Vector3>();
 			}
 			e_ik = in_range[e_ik].source;
 		}else{
-			cout << "aha";
+			//cout << "aha";
 			return Vector<Vector3>();
 		}
 	
 	}
-	cout << "end";
+	//cout << "end";
 	path.push_back(start);
 	path.invert();
     return path;
@@ -410,4 +412,73 @@ void MyGrid::hide_basics(){
 	}
 	multimesh_instances.clear();
 	show_invisible_meshes();
+}
+
+float MyGrid::get_ray_intersect(Vector3 start, Vector3 dir){
+	dir = dir.normalized();
+	start -= _get_offset() + Vector3(0.0, 0.8, 0.0);
+	float tox = (dir.x > 0? 0: -1);
+	float toy = (dir.y > 0? 0: -1);
+	float toz = (dir.z > 0? 0: -1);
+	Vector3 to = Vector3(tox, toy, toz);
+	if (dir.x == 0){
+		dir.x = 0;
+	}
+	if (dir.y == 0){
+		dir.y = 0;
+	}
+	if (dir.z == 0){
+		dir.z = 0;
+	}
+
+	Vector3 d = dir.sign();
+	d.x = d.x > 0? 1: -1;
+	d.y = d.y > 0? 1: -1;
+	d.z = d.z > 0? 1: -1;
+
+	Vector3 tc = (start/cell_size).floor() + Vector3(1.0, 1.0, 1.0);
+	IndexKey last_ik;
+	last_ik.x = tc.x;
+	last_ik.y = tc.y;
+	last_ik.z = tc.z;
+	float t = 0;
+	Vector3 cur = start;
+
+	if (dir.length() == 0){
+		return INFINITY;
+	}
+
+	while (t < 30.0){
+		
+		IndexKey ik;
+		ik.x = tc.x;
+		ik.y = tc.y;
+		ik.z = tc.z;
+		if (cell_map.has(ik)){
+			return t;
+		}
+		last_ik = ik;
+		Vector3 dtv = ((tc + to)*cell_size - cur) / dir;
+		
+		float dt = dtv.x;
+		if (dtv.y < dt){
+			dt = dtv.y;
+		}
+		if (dtv.z < dt){
+			dt = dtv.z;
+			tc.z += d.z;
+		}
+		if (dt == dtv.x){
+			tc.x += d.x;
+		}
+		if (dt == dtv.y){
+			tc.y += d.y;
+		}
+		t += dt;
+		cur = start + t*dir;
+
+	}
+
+	return INFINITY;
+
 }
