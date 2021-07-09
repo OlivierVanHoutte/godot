@@ -2,6 +2,9 @@
 
 #include "mygrid.h"
 
+#define diagonal_step_cost 1.414
+#define M_PIl 3.141592653589793238462643383279502884L /* pi */
+
 void MyGrid::_bind_methods() {
     BIND_ENUM_CONSTANT(solid);
     BIND_ENUM_CONSTANT(walkable);
@@ -23,6 +26,12 @@ void MyGrid::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("get_ray_intersect", "start", "dir"), &MyGrid::get_ray_intersect);
 
+	ClassDB::bind_method(D_METHOD("clear_outline", "clear_path_cache"), &MyGrid::clear_outline, DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("create_outline"), &MyGrid::create_outline);
+	ClassDB::bind_method(D_METHOD("set_mesh_library_outline", "mesh_library_outline"), &MyGrid::set_mesh_library_outline);
+	ClassDB::bind_method(D_METHOD("get_mesh_library_outline"), &MyGrid::get_mesh_library_outline);
+	
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "mesh_library_outline", PROPERTY_HINT_RESOURCE_TYPE, "MeshLibrary"), "set_mesh_library_outline", "get_mesh_library_outline");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "basics_meshlib", PROPERTY_HINT_RESOURCE_TYPE, "MeshLibrary"), "set_basics_library", "get_basics_library");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "basics_material", PROPERTY_HINT_RESOURCE_TYPE, "Material"), "set_basics_mat", "get_basics_mat");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "gen"), "show_basics", "hide_basics");
@@ -345,7 +354,7 @@ void MyGrid::update_autotile(){
 		VS::get_singleton()->multimesh_allocate(mm, E->get().size(), VS::MULTIMESH_TRANSFORM_3D, VS::MULTIMESH_COLOR_NONE);
 		basics_library->get_item_mesh(E->key())->surface_set_material(0, basics_material);
 		VS::get_singleton()->multimesh_set_mesh(mm, basics_library->get_item_mesh(E->key())->get_rid());
-
+		
 		int idx = 0;
 		for (List<Pair<Transform, GridMap::IndexKey> >::Element *F = E->get().front(); F; F = F->next()) {
 			VS::get_singleton()->multimesh_instance_set_transform(mm, idx, F->get().first);
@@ -354,12 +363,13 @@ void MyGrid::update_autotile(){
 
 		RID instance = VS::get_singleton()->instance_create();
 		VS::get_singleton()->instance_set_base(instance, mm);
-
+		
+		//VS::get_singleton()->instance_geometry_set_cast_shadows_setting(basics_library->get_item_mesh(E->key())->get_rid(), VS::SHADOW_CASTING_SETTING_ON);
 		if (is_inside_tree()) {
 			VS::get_singleton()->instance_set_scenario(instance, get_world()->get_scenario());
 			VS::get_singleton()->instance_set_transform(instance, get_global_transform());
 		}
-
+		VS::get_singleton()->instance_geometry_set_cast_shadows_setting(instance, VS::SHADOW_CASTING_SETTING_ON);
 		mmi.instance = instance;
 		mmi.multimesh = mm;
 		multimesh_instances.push_back(mmi);
@@ -372,6 +382,7 @@ void MyGrid::hide_invisible_meshes(){
 	for (Map<OctantKey, Octant *>::Element *F = octant_map.front(); F; F = F->next()){
 		if (!(F->get()->multimesh_instances.empty())){
 			VS::get_singleton()->instance_set_visible ( F->get()->multimesh_instances[0].instance, false );
+			//VS::get_singleton()->instance_geometry_set_cast_shadows_setting( F->get()->multimesh_instances[0].instance, VS::SHADOW_CASTING_SETTING_SHADOWS_ONLY );
 		}
 	}
 
@@ -481,4 +492,220 @@ float MyGrid::get_ray_intersect(Vector3 start, Vector3 dir){
 
 	return INFINITY;
 
+}
+
+void MyGrid::clear_outline(bool clear_path_cache) {
+	for (int i = 0; i < outline_multimeshes.size(); i++) {
+
+		VS::get_singleton()->free(outline_multimeshes[i].instance);
+		VS::get_singleton()->free(outline_multimeshes[i].multimesh);
+	}
+
+	if (!outline_multimeshes.empty()) {
+		outline_multimeshes.clear();
+	}
+
+	if (clear_path_cache) {
+		in_range.clear();
+		//paths.clear();
+	}
+	outline_visible = false;
+}
+
+void MyGrid::create_outline() {
+
+	clear_outline(false);
+
+	// Draw Outline
+	if (!mesh_library_outline.is_null()) {
+		int total_outline_meshes = 0;
+
+		Map<int, List<Pair<Transform, IndexKey> > > outline_sorted;
+		for (Map<IndexKey, DistanceTo>::Element *E = in_range.front(); E; E = E->next()) {
+			int touching = 0;
+			IndexKey ik = E->key();
+			IndexKey ik_right = IndexKey(ik.x + 1, ik.y, ik.z);
+			IndexKey ik_left = IndexKey(ik.x - 1, ik.y, ik.z);
+			IndexKey ik_up = IndexKey(ik.x, ik.y, ik.z - 1);
+			IndexKey ik_down = IndexKey(ik.x, ik.y, ik.z + 1);
+			bool right = in_range.has(ik_right);
+			bool left = in_range.has(ik_left);
+			bool up = in_range.has(ik_up);
+			bool down = in_range.has(ik_down);
+			
+			/*bool right = false;
+			bool left = false;
+			bool up = false;
+			bool down = false;*/
+			Vector3 cellpos = Vector3(ik.x, ik.y, ik.z);
+			Transform xform;
+			xform.basis.set_orthogonal_index(0);
+			Vector3 ofs = _get_offset();
+			ofs.y -= 0.8;
+
+			Vector3 scale = Vector3(1.0, 1.0, 1.334);
+
+			if (!up) {
+				Transform xx = xform;
+				Vector3 ff = ofs;
+				if (left) {
+					xx.scale(scale);
+					ff.x -= 0.1;
+				} else {
+					add_outline_part(outline_sorted, 0, M_PIl, ik, ofs, cellpos, xform);
+				}
+				if (right) {
+					xx.scale(scale);
+					ff.x += 0.1;
+				} else {
+					add_outline_part(outline_sorted, 0, M_PIl / 2.0, ik, ofs, cellpos, xform);
+				}
+				add_outline_part(outline_sorted, 3, M_PIl / 2.0, ik, ff, cellpos, xx);
+
+			} else {
+				if (left) {
+					IndexKey ik_ul = IndexKey(ik.x - 1, ik.y, ik.z - 1);
+					if (!in_range.has(ik_ul)) {
+						add_outline_part(outline_sorted, 4, M_PIl / 2.0, ik, ofs, cellpos, xform);
+					}
+				}
+				if (right) {
+					IndexKey ik_ur = IndexKey(ik.x + 1, ik.y, ik.z - 1);
+					if (!in_range.has(ik_ur)) {
+						add_outline_part(outline_sorted, 4, 0.0, ik, ofs, cellpos, xform);
+					}
+				}
+			}
+			if (!down) {
+				Transform xx = xform;
+				Vector3 ff;
+				ff.x = ofs.x;
+				ff.y = ofs.y;
+				ff.z = ofs.z;
+				if (left) {
+					xx.scale(scale);
+					ff.x -= 0.1;
+				} else {
+					add_outline_part(outline_sorted, 0, -M_PIl / 2.0, ik, ofs, cellpos, xform);
+				}
+				if (right) {
+					ff.x += 0.1;
+					xx.scale(scale);
+
+				} else {
+					add_outline_part(outline_sorted, 0, 0.0, ik, ofs, cellpos, xform);
+				}
+				add_outline_part(outline_sorted, 3, -M_PIl / 2.0, ik, ff, cellpos, xx);
+			} else {
+				if (left) {
+					IndexKey ik_dl = IndexKey(ik.x - 1, ik.y, ik.z + 1);
+					if (!in_range.has(ik_dl)) {
+						add_outline_part(outline_sorted, 4, M_PIl, ik, ofs, cellpos, xform);
+					}
+				}
+				if (right) {
+					IndexKey ik_dr = IndexKey(ik.x + 1, ik.y, ik.z + 1);
+					if (!in_range.has(ik_dr)) {
+						add_outline_part(outline_sorted, 4, -M_PIl / 2.0, ik, ofs, cellpos, xform);
+					}
+				}
+			}
+
+			if (!right) {
+				Transform xx = xform;
+				Vector3 ff;
+				ff.x = ofs.x;
+				ff.y = ofs.y;
+				ff.z = ofs.z;
+				if (up) {
+					xx.scale(scale);
+					ff.z -= 0.1;
+				}
+				if (down) {
+					ff.z += 0.1;
+					xx.scale(scale);
+				}
+				add_outline_part(outline_sorted, 3, 0.0, ik, ff, cellpos, xx);
+			}
+			if (!left) {
+				Transform xx = xform;
+				Vector3 ff;
+				ff.x = ofs.x;
+				ff.y = ofs.y;
+				ff.z = ofs.z;
+				if (up) {
+					xx.scale(scale);
+					ff.z -= 0.1;
+				}
+				if (down) {
+					ff.z += 0.1;
+					xx.scale(scale);
+				}
+				add_outline_part(outline_sorted, 3, M_PIl, ik, ff, cellpos, xx);
+			}
+		}
+
+		for (Map<int, List<Pair<Transform, IndexKey> > >::Element *E = outline_sorted.front(); E; E = E->next()) {
+			RID mm = VS::get_singleton()->multimesh_create();
+			VS::get_singleton()->multimesh_allocate(mm, outline_sorted[E->key()].size(), VS::MULTIMESH_TRANSFORM_3D, VS::MULTIMESH_COLOR_NONE);
+			VS::get_singleton()->multimesh_set_mesh(mm, mesh_library_outline->get_item_mesh(E->key())->get_rid());
+			int idx = 0;
+
+			for (List<Pair<Transform, IndexKey> >::Element *F = outline_sorted[E->key()].front(); F; F = F->next()) {
+
+				VS::get_singleton()->multimesh_instance_set_transform(mm, idx, F->get().first);
+#ifdef TOOLS_ENABLED
+
+				Octant::MultimeshInstance::Item it;
+				it.index = idx;
+				it.transform = F->get().first;
+				it.key = F->get().second;
+#endif
+
+				idx++;
+			}
+
+			RID instance = VS::get_singleton()->instance_create();
+			VS::get_singleton()->instance_set_base(instance, mm);
+			VS::get_singleton()->instance_geometry_set_cast_shadows_setting(instance, VS::SHADOW_CASTING_SETTING_OFF);
+			if (is_inside_tree()) {
+				VS::get_singleton()->instance_set_scenario(instance, get_world()->get_scenario());
+				VS::get_singleton()->instance_set_transform(instance, get_global_transform());
+			}
+			Outline_MMI o_mmi;
+			o_mmi.instance = instance;
+			o_mmi.multimesh = mm;
+			outline_multimeshes.push_back(o_mmi);
+		}
+	}
+
+	outline_visible = true;
+}
+
+bool MyGrid::is_outline_visible() {
+	return outline_visible;
+}
+
+void MyGrid::add_outline_part(Map<int, List<Pair<Transform, IndexKey> > > &outline_sorted, int index, float rotation, IndexKey ik, Vector3 ofs, Vector3 cellpos, Transform xform) {
+	xform = xform.rotated(Vector3(0, 1, 0), rotation);
+	xform.set_origin(cellpos * cell_size + ofs);
+	xform.basis.scale(Vector3(cell_scale, cell_scale, cell_scale));
+	outline_sorted[index].push_back(Pair<Transform, IndexKey>(xform, ik));
+}
+
+void MyGrid::set_mesh_library_outline(const Ref<MeshLibrary> &p_mesh_library) {
+
+	if (!mesh_library_outline.is_null())
+		mesh_library_outline->unregister_owner(this);
+	mesh_library_outline = p_mesh_library;
+	if (!mesh_library_outline.is_null())
+		mesh_library_outline->register_owner(this);
+
+	_recreate_octant_data();
+	_change_notify("mesh_library_outline");
+}
+
+Ref<MeshLibrary> MyGrid::get_mesh_library_outline() const {
+
+	return mesh_library_outline;
 }

@@ -61,8 +61,30 @@ public:
 
 			return key < p_key.key;
 		}
+				operator Vector3() const { return Vector3(x, y, z); }
+
+		bool equals(Vector3 &p){
+			return x == p.x && y == p.y && z == p.z;
+		}
+
+		bool equals(IndexKey &p) {
+			return x == p.x && y == p.y && z == p.z;
+		}
+
+		IndexKey operator+(const IndexKey &ik){
+			return IndexKey(ik.x + x, ik.y + y, ik.z + z);
+		}
+
+		Vector3 to_vector3(){
+			return Vector3(x, y, z);
+		}
 
 		IndexKey() { key = 0; }
+		IndexKey(int _x, int _y, int _z){
+			x = _x;
+			y = _y;
+			z = _z;
+		}
 	};
 protected:
 	/**

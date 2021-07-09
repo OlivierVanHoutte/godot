@@ -18,6 +18,16 @@ class MyGrid : public GridMap {
 		IndexKey source;
 		float distance;
 	};
+	
+	Ref<MeshLibrary> mesh_library_outline;
+	bool outline_visible = false;
+	struct Outline_MMI {
+
+		RID instance;
+		RID multimesh;
+	};
+
+	Vector<Outline_MMI> outline_multimeshes;
 
 	Vector<Octant::MultimeshInstance> multimesh_instances;
 
@@ -55,6 +65,15 @@ public:
 	bool get_show_basics();
 
 	float get_ray_intersect(Vector3 start, Vector3 dir);
+
+	void clear_outline(bool clear_path_cache);
+	void create_outline();
+	bool is_outline_visible();
+	void add_outline_part(Map<int, List<Pair<Transform, IndexKey> > > &outline_sorted, int index, float rotation, IndexKey ik, Vector3 ofs, Vector3 cellpos, Transform xform);
+	
+
+	Ref<MeshLibrary> get_mesh_library_outline() const;
+	void set_mesh_library_outline(const Ref<MeshLibrary> &p_mesh_library);
 };
 
 bool is_equal(GridMap::IndexKey ik1, GridMap::IndexKey ik2);
