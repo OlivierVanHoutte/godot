@@ -36,10 +36,9 @@
 #include "mesh.h"
 #include "scene/3d/navigation_mesh.h"
 #include "shape.h"
+#include <string> 
 
-enum GridcellType { solid,
-	walkable
-};
+
 
 class MeshLibrary : public Resource {
 
@@ -47,14 +46,19 @@ class MeshLibrary : public Resource {
 	RES_BASE_EXTENSION("meshlib");
 
 public:
+	enum GridcellType { SOLID,
+		GHOST
+	};
 	struct ShapeData {
 		Ref<Shape> shape;
 		Transform local_transform;
 	};
 	struct Item {
-		GridcellType cell_type = solid;
+		GridcellType cell_type;
 		String name;
 		Ref<Mesh> mesh;
+		Ref<Material> override_material;
+		Vector3 offset;
 		Vector<ShapeData> shapes;
 		Ref<Texture> preview;
 		Transform navmesh_transform;
@@ -79,8 +83,7 @@ public:
 	void set_item_count(int i);
 	int get_item_count() const;
 
-	GridcellType get_item_celltype(int i);
-	void set_item_celltype(int i, GridcellType ct);
+	
 
 	void create_item(int p_item);
 	void set_item_name(int p_item, const String &p_name);
@@ -89,6 +92,15 @@ public:
 	void set_item_navmesh_transform(int p_item, const Transform &p_transform);
 	void set_item_shapes(int p_item, const Vector<ShapeData> &p_shapes);
 	void set_item_preview(int p_item, const Ref<Texture> &p_preview);
+	
+	void set_item_material(int p_item, const Ref<Material> &p_mat);
+	Ref<Material> get_item_material(int p_item) const;
+	void set_item_offset(int p_item, const Vector3 &p_offset);
+	Vector3 get_item_offset(int p_item) const;
+	void set_item_cell_type(int p_item, GridcellType ct);
+	GridcellType get_item_cell_type(int p_item) const;
+	int _get_item_cell_type(int p_item) const;
+
 	String get_item_name(int p_item) const;
 	Ref<Mesh> get_item_mesh(int p_item) const;
 	Ref<NavigationMesh> get_item_navmesh(int p_item) const;
@@ -110,5 +122,9 @@ public:
 	~MeshLibrary();
 };
 
-VARIANT_ENUM_CAST(GridcellType);
+MeshLibrary::GridcellType cell_type(int i);
+int _int(MeshLibrary::GridcellType i);
+
+
+VARIANT_ENUM_CAST( MeshLibrary::GridcellType);
 #endif // CUBE_GRID_THEME_H

@@ -33,10 +33,12 @@ class MyGrid : public GridMap {
 
 	Ref<MeshLibrary> basics_library;
 	Ref<Material> basics_material;
+	Ref<Material> outline_material;
 	Map<IndexKey, DistanceTo> in_range;
 	IndexKey start_ik;
 	float range = 4.0;
 	bool showing_basics = false;
+
 protected:
 	static void _bind_methods();
 
@@ -44,6 +46,7 @@ public:
 	MyGrid();
 	bool is_solid(IndexKey key);
 	bool is_walkable(IndexKey ik);
+	void _add_in_range(IndexKey source, IndexKey target, vector<IndexKey> &q, float walk_range);
 	void add_in_range(IndexKey source, IndexKey target, vector<IndexKey> &q, float walk_range);
 	void update_range(Vector3 start, int walk_range);
 	Vector<Vector3> find_path(Vector3 start, Vector3 end);
@@ -72,8 +75,14 @@ public:
 	void add_outline_part(Map<int, List<Pair<Transform, IndexKey> > > &outline_sorted, int index, float rotation, IndexKey ik, Vector3 ofs, Vector3 cellpos, Transform xform);
 	
 
-	Ref<MeshLibrary> get_mesh_library_outline() const;
-	void set_mesh_library_outline(const Ref<MeshLibrary> &p_mesh_library);
+	Ref<MeshLibrary> get_outline_mesh_library() const;
+	void set_outline_mesh_library(const Ref<MeshLibrary> &p_mesh_library);
+
+	void set_outline_mat(const Ref<Material> &p_mat);
+	Ref<Material> get_outline_mat() const;
+
+	~MyGrid();
+
 };
 
 bool is_equal(GridMap::IndexKey ik1, GridMap::IndexKey ik2);

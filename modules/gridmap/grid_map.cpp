@@ -523,10 +523,15 @@ bool GridMap::_octant_update(const OctantKey &p_key) {
 			RID mm = VS::get_singleton()->multimesh_create();
 			VS::get_singleton()->multimesh_allocate(mm, E->get().size(), VS::MULTIMESH_TRANSFORM_3D, VS::MULTIMESH_COLOR_NONE);
 			VS::get_singleton()->multimesh_set_mesh(mm, mesh_library->get_item_mesh(E->key())->get_rid());
+			if (mesh_library->get_item_material(E->key()).is_valid()){
+				mesh_library->get_item_mesh(E->key())->surface_set_material(0, mesh_library->get_item_material(E->key()));
+			}
+			Vector3 offset = mesh_library->get_item_offset(E->key());
 
 			int idx = 0;
 			for (List<Pair<Transform, IndexKey> >::Element *F = E->get().front(); F; F = F->next()) {
-				VS::get_singleton()->multimesh_instance_set_transform(mm, idx, F->get().first);
+				Transform t = F->get().first.translated(offset);
+				VS::get_singleton()->multimesh_instance_set_transform(mm, idx, t);
 #ifdef TOOLS_ENABLED
 
 				Octant::MultimeshInstance::Item it;
@@ -541,7 +546,7 @@ bool GridMap::_octant_update(const OctantKey &p_key) {
 
 			RID instance = VS::get_singleton()->instance_create();
 			VS::get_singleton()->instance_set_base(instance, mm);
-
+			
 			if (is_inside_tree()) {
 				VS::get_singleton()->instance_set_scenario(instance, get_world()->get_scenario());
 				VS::get_singleton()->instance_set_transform(instance, get_global_transform());

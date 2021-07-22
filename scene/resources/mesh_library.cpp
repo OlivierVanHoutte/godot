@@ -50,13 +50,6 @@ int MeshLibrary::get_item_count() const {
 	return item_count;
 };
 
-GridcellType MeshLibrary::get_item_celltype(int i){
-	return item_map[i].cell_type;
-}
-void MeshLibrary::set_item_celltype(int i, GridcellType ct){
-	item_map[i].cell_type = ct;
-}
-
 //////////////
 
 bool MeshLibrary::_set(const StringName &p_name, const Variant &p_value) {
@@ -87,7 +80,13 @@ bool MeshLibrary::_set(const StringName &p_name, const Variant &p_value) {
 			set_item_navmesh(idx, p_value);
 		else if (what == "navmesh_transform")
 			set_item_navmesh_transform(idx, p_value);
-		else
+		else if (what == "override_material")
+			set_item_material(idx, p_value);
+		else if (what == "offset")
+			set_item_offset(idx, p_value);
+		else if (what == "cell_type"){
+			set_item_cell_type(idx, cell_type(int(p_value)));
+		}else
 			return false;
 
 		return true;
@@ -122,7 +121,13 @@ bool MeshLibrary::_get(const StringName &p_name, Variant &r_ret) const {
 			r_ret = get_item_navmesh_transform(idx);
 		else if (what == "preview")
 			r_ret = get_item_preview(idx);
-		else
+		else if (what == "override_material")
+			r_ret = get_item_material(idx);
+		else if (what == "offset")
+			r_ret = get_item_offset(idx);
+		else if (what == "cell_type"){
+			r_ret = get_item_cell_type(idx);
+		}else
 			return false;
 	}
 	return true;
@@ -137,11 +142,15 @@ void MeshLibrary::_get_property_list(List<PropertyInfo> *p_list) const {
 		String name = "item/" + itos(E->key()) + "/";
 		p_list->push_back(PropertyInfo(Variant::STRING, name + "name"));
 		p_list->push_back(PropertyInfo(Variant::OBJECT, name + "mesh", PROPERTY_HINT_RESOURCE_TYPE, "Mesh"));
+		p_list->push_back(PropertyInfo(Variant::INT, name + "cell_type", PROPERTY_HINT_ENUM, "SOLID,GHOST"));
+		p_list->push_back(PropertyInfo(Variant::OBJECT, name + "override_material", PROPERTY_HINT_RESOURCE_TYPE, "Material"));
+		p_list->push_back(PropertyInfo(Variant::VECTOR3, name + "offset"));
 		p_list->push_back(PropertyInfo(Variant::TRANSFORM, name + "mesh_transform"));
 		p_list->push_back(PropertyInfo(Variant::ARRAY, name + "shapes"));
 		p_list->push_back(PropertyInfo(Variant::OBJECT, name + "navmesh", PROPERTY_HINT_RESOURCE_TYPE, "NavigationMesh"));
 		p_list->push_back(PropertyInfo(Variant::TRANSFORM, name + "navmesh_transform"));
 		p_list->push_back(PropertyInfo(Variant::OBJECT, name + "preview", PROPERTY_HINT_RESOURCE_TYPE, "Texture", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_EDITOR_HELPER));
+	
 	}
 }
 
@@ -151,6 +160,44 @@ void MeshLibrary::create_item(int p_item) {
 	ERR_FAIL_COND(item_map.has(p_item));
 	item_map[p_item] = Item();
 	_change_notify();
+}
+
+void MeshLibrary::set_item_offset(int p_item, const Vector3 &p_offset){
+	ERR_FAIL_COND_MSG(!item_map.has(p_item), "Requested for nonexistent MeshLibrary item '" + itos(p_item) + "'.");
+	item_map[p_item].offset = p_offset;
+	emit_changed();
+	_change_notify();
+}
+
+Vector3 MeshLibrary::get_item_offset(int p_item) const{
+	//ERR_FAIL_COND_V_MSG(!item_map.has(p_item), "", "Requested for nonexistent MeshLibrary item '" + itos(p_item) + "'.");
+	return item_map[p_item].offset;
+}
+
+void MeshLibrary::set_item_material(int p_item, const Ref<Material> &p_mat){
+
+	ERR_FAIL_COND_MSG(!item_map.has(p_item), "Requested for nonexistent MeshLibrary item '" + itos(p_item) + "'.");
+	item_map[p_item].override_material = p_mat;
+	emit_changed();
+	_change_notify();
+}
+
+Ref<Material> MeshLibrary::get_item_material(int p_item) const{
+	ERR_FAIL_COND_V_MSG(!item_map.has(p_item), "", "Requested for nonexistent MeshLibrary item '" + itos(p_item) + "'.");
+	return item_map[p_item].override_material;
+};
+
+MeshLibrary::GridcellType MeshLibrary::get_item_cell_type(int p_item) const{
+	return item_map[p_item].cell_type;
+}
+
+int  MeshLibrary::_get_item_cell_type(int p_item) const{
+	return _int(item_map[p_item].cell_type);
+}
+
+void MeshLibrary::set_item_cell_type(int p_item, MeshLibrary::GridcellType ct){
+	ERR_FAIL_COND_MSG(!item_map.has(p_item), "Requested for nonexistent MeshLibrary item '" + itos(p_item) + "'.");
+	item_map[p_item].cell_type = ct;
 }
 
 void MeshLibrary::set_item_name(int p_item, const String &p_name) {
@@ -327,6 +374,14 @@ Array MeshLibrary::_get_item_shapes(int p_item) const {
 void MeshLibrary::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("create_item", "id"), &MeshLibrary::create_item);
+	
+	ClassDB::bind_method(D_METHOD("set_item_override_material", "id", "material"), &MeshLibrary::set_item_material);
+	ClassDB::bind_method(D_METHOD("get_item_override_material", "id"), &MeshLibrary::get_item_material);
+	ClassDB::bind_method(D_METHOD("set_item_offset", "id", "vector"), &MeshLibrary::set_item_offset);
+	ClassDB::bind_method(D_METHOD("get_item_offset", "id"), &MeshLibrary::get_item_offset);
+	ClassDB::bind_method(D_METHOD("set_item_cell_type", "id", "cell_type"), &MeshLibrary::set_item_cell_type);
+	ClassDB::bind_method(D_METHOD("get_item_cell_type", "id"), &MeshLibrary::get_item_cell_type);
+
 	ClassDB::bind_method(D_METHOD("set_item_name", "id", "name"), &MeshLibrary::set_item_name);
 	ClassDB::bind_method(D_METHOD("set_item_mesh", "id", "mesh"), &MeshLibrary::set_item_mesh);
 	ClassDB::bind_method(D_METHOD("set_item_navmesh", "id", "navmesh"), &MeshLibrary::set_item_navmesh);
@@ -345,11 +400,43 @@ void MeshLibrary::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("clear"), &MeshLibrary::clear);
 	ClassDB::bind_method(D_METHOD("get_item_list"), &MeshLibrary::get_item_list);
 	ClassDB::bind_method(D_METHOD("get_last_unused_item_id"), &MeshLibrary::get_last_unused_item_id);
-
+ 	
+	BIND_ENUM_CONSTANT(SOLID);
+    BIND_ENUM_CONSTANT(GHOST);
 
 }
 
 MeshLibrary::MeshLibrary() {
 }
 MeshLibrary::~MeshLibrary() {
+}
+
+MeshLibrary::GridcellType cell_type(int i){
+	switch (i)
+	{
+	case 0:
+		return MeshLibrary::SOLID;
+		break;
+	case 1:
+		return MeshLibrary::GHOST;
+		break;
+	default:
+		return MeshLibrary::GHOST;
+		break;
+	}
+}
+
+int _int(MeshLibrary::GridcellType i){
+	switch (i)
+	{
+	case MeshLibrary::SOLID:
+		return 0;
+		break;
+	case MeshLibrary::GHOST:
+		return 1;
+		break;
+	default:
+		return 1;
+		break;
+	}
 }
