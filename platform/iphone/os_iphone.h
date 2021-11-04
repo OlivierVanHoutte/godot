@@ -44,9 +44,6 @@
 #include "servers/visual/rasterizer.h"
 #include "servers/visual_server.h"
 
-extern void godot_ios_plugins_initialize();
-extern void godot_ios_plugins_deinitialize();
-
 class OSIPhone : public OS_Unix {
 
 private:
@@ -112,6 +109,9 @@ public:
 
 	virtual String get_name() const;
 	virtual String get_model_name() const;
+
+	virtual void set_clipboard(const String &p_text);
+	virtual String get_clipboard() const;
 
 	Error shell_open(String p_uri);
 

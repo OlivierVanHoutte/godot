@@ -102,8 +102,9 @@ Node *SceneState::instance(GenEditState p_edit_state) const {
 #endif
 			parent = nparent;
 		} else {
-			// i == 0 is root node. Confirm that it doesn't have a parent defined.
+			// i == 0 is root node.
 			ERR_FAIL_COND_V_MSG(n.parent != -1, nullptr, vformat("Invalid scene: root node %s cannot specify a parent node.", snames[n.name]));
+			ERR_FAIL_COND_V_MSG(n.type == TYPE_INSTANCED && base_scene_idx < 0, nullptr, vformat("Invalid scene: root node %s in an instance, but there's no base scene.", snames[n.name]));
 		}
 
 		Node *node = NULL;
@@ -483,7 +484,9 @@ Error SceneState::_parse_node(Node *p_owner, Node *p_node, int p_parent_idx, Map
 	StringName type = p_node->get_class();
 
 	Ref<Script> script = p_node->get_script();
-	if (script.is_valid()) {
+	if (Engine::get_singleton()->is_editor_hint() && script.is_valid()) {
+		// Should be called in the editor only and not at runtime,
+		// otherwise it can cause problems because of missing instance state support.
 		script->update_exports();
 	}
 

@@ -167,7 +167,7 @@ void ExtendGDScriptParser::parse_class_symbol(const GDScriptParser::ClassNode *p
 
 		lsp::DocumentSymbol symbol;
 		symbol.name = m.identifier;
-		symbol.kind = lsp::SymbolKind::Variable;
+		symbol.kind = m.setter == "" && m.getter == "" ? lsp::SymbolKind::Variable : lsp::SymbolKind::Property;
 		symbol.deprecated = false;
 		const int line = LINE_NUMBER_TO_INDEX(m.line);
 		symbol.range.start.line = line;
@@ -294,7 +294,7 @@ void ExtendGDScriptParser::parse_function_symbol(const GDScriptParser::FunctionN
 	const String uri = get_uri();
 
 	r_symbol.name = p_func->name;
-	r_symbol.kind = lsp::SymbolKind::Function;
+	r_symbol.kind = p_func->_static ? lsp::SymbolKind::Function : lsp::SymbolKind::Method;
 	r_symbol.detail = "func " + p_func->name + "(";
 	r_symbol.deprecated = false;
 	const int line = LINE_NUMBER_TO_INDEX(p_func->line);
@@ -413,6 +413,12 @@ String ExtendGDScriptParser::parse_documentation(int p_line, bool p_docs_down) {
 				doc_lines.push_front(line_comment);
 			}
 		} else {
+			if (i > 0 && i < lines.size() - 1) {
+				String next_line = lines[i + step].strip_edges(true, false);
+				if (next_line.begins_with("#")) {
+					continue;
+				}
+			}
 			break;
 		}
 	}

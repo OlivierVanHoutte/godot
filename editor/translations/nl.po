@@ -46,12 +46,14 @@
 # T-rex08 <ipadtriceratops@gmail.com>, 2021.
 # Dwarffish <hoogvlietjohan@gmail.com>, 2021.
 # Arthur de Roos <arthur.de.roos@gmail.com>, 2021.
+# Vancha March <tjipkevdh@gmail.com>, 2021.
+# Hugo van de Kuilen <hugo.vandekuilen1234567890@gmail.com>, 2021.
 msgid ""
 msgstr ""
 "Project-Id-Version: Godot Engine editor\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-06-05 08:32+0000\n"
-"Last-Translator: Stijn Hinlopen <f.a.hinlopen@gmail.com>\n"
+"PO-Revision-Date: 2021-08-02 02:00+0000\n"
+"Last-Translator: Hugo van de Kuilen <hugo.vandekuilen1234567890@gmail.com>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/godot-engine/godot/"
 "nl/>\n"
 "Language: nl\n"
@@ -59,7 +61,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.7-dev\n"
+"X-Generator: Weblate 4.8-dev\n"
 
 #: core/math/expression.cpp modules/gdscript/gdscript_functions.cpp
 #: modules/visual_script/visual_script_builtin_funcs.cpp
@@ -451,10 +453,6 @@ msgid "Animation tracks can only point to AnimationPlayer nodes."
 msgstr "Animatiesporen kunnen alleen verwijzen naar AnimatiePlayer-knopen."
 
 #: editor/animation_track_editor.cpp
-msgid "An animation player can't animate itself, only other players."
-msgstr "Een animatiespeler kan zichzelf niet animeren, alleen andere spelers."
-
-#: editor/animation_track_editor.cpp
 msgid "Not possible to add a new track without a root"
 msgstr "Niet mogelijk om een nieuwe track toe te voegen zonder een root"
 
@@ -499,8 +497,9 @@ msgid "Anim Move Keys"
 msgstr "Anim Verplaats Keys"
 
 #: editor/animation_track_editor.cpp
-msgid "Clipboard is empty"
-msgstr "Klembord is leeg"
+#: modules/visual_script/visual_script_editor.cpp
+msgid "Clipboard is empty!"
+msgstr "Plakbord is leeg!"
 
 #: editor/animation_track_editor.cpp
 msgid "Paste Tracks"
@@ -1165,7 +1164,7 @@ msgstr "Bedankt van de Godot gemeenschap!"
 
 #: editor/editor_about.cpp editor/editor_node.cpp editor/project_manager.cpp
 msgid "Click to copy."
-msgstr ""
+msgstr "Klik om te kopiëren."
 
 #: editor/editor_about.cpp
 msgid "Godot Engine contributors"
@@ -2550,7 +2549,7 @@ msgid "Save changes to the following scene(s) before quitting?"
 msgstr "Wijzigen aan de volgende scène(s) opslaan voor het afsluiten?"
 
 #: editor/editor_node.cpp
-msgid "Save changes the following scene(s) before opening Project Manager?"
+msgid "Save changes to the following scene(s) before opening Project Manager?"
 msgstr ""
 "Wijzigen aan de volgende scène(s) opslaan voor het openen van Projectbeheer?"
 
@@ -5246,9 +5245,10 @@ msgstr ""
 "Sla uw scène op en probeer opnieuw."
 
 #: editor/plugins/baked_lightmap_editor_plugin.cpp
+#, fuzzy
 msgid ""
-"No meshes to bake. Make sure they contain an UV2 channel and that the 'Bake "
-"Light' flag is on."
+"No meshes to bake. Make sure they contain an UV2 channel and that the 'Use "
+"In Baked Light' and 'Generate Lightmap' flags are on."
 msgstr ""
 "Geen meshes om te bakken. Zorg ervoor dat ze een UV2 kanaal bevatten en dat "
 "'Bake Light' vlag aan staat."
@@ -7391,6 +7391,28 @@ msgid "View Plane Transform."
 msgstr "Bekijk Vlak Transformatie."
 
 #: editor/plugins/spatial_editor_plugin.cpp
+#: editor/plugins/texture_region_editor_plugin.cpp
+#: scene/resources/visual_shader.cpp
+msgid "None"
+msgstr "Geen"
+
+#: editor/plugins/spatial_editor_plugin.cpp
+#, fuzzy
+msgid "Rotate"
+msgstr "Rotatiemodus"
+
+#. TRANSLATORS: This refers to the movement that changes the position of an object.
+#: editor/plugins/spatial_editor_plugin.cpp
+#, fuzzy
+msgid "Translate"
+msgstr "Verplaats:"
+
+#: editor/plugins/spatial_editor_plugin.cpp
+#, fuzzy
+msgid "Scale"
+msgstr "Schaal:"
+
+#: editor/plugins/spatial_editor_plugin.cpp
 msgid "Scaling: "
 msgstr "Schaling: "
 
@@ -8043,11 +8065,6 @@ msgstr "Stel Marge In"
 #: editor/plugins/texture_region_editor_plugin.cpp
 msgid "Snap Mode:"
 msgstr "Kleefmodus:"
-
-#: editor/plugins/texture_region_editor_plugin.cpp
-#: scene/resources/visual_shader.cpp
-msgid "None"
-msgstr "Geen"
 
 #: editor/plugins/texture_region_editor_plugin.cpp
 msgid "Pixel Snap"
@@ -11618,6 +11635,11 @@ msgid "GridMap Paint"
 msgstr "GridMap tekenen"
 
 #: modules/gridmap/grid_map_editor_plugin.cpp
+#, fuzzy
+msgid "GridMap Selection"
+msgstr "GridMap-selectie vullen"
+
+#: modules/gridmap/grid_map_editor_plugin.cpp
 msgid "Grid Map"
 msgstr "Grid Map"
 
@@ -11868,6 +11890,16 @@ msgid "Add Output Port"
 msgstr "Uitvoerpoort toevoegen"
 
 #: modules/visual_script/visual_script_editor.cpp
+#, fuzzy
+msgid "Change Port Type"
+msgstr "Type veranderen"
+
+#: modules/visual_script/visual_script_editor.cpp
+#, fuzzy
+msgid "Change Port Name"
+msgstr "Verander input poort naam"
+
+#: modules/visual_script/visual_script_editor.cpp
 msgid "Override an existing built-in function."
 msgstr "Een bestaande ingebouwde functie overschrijven."
 
@@ -12045,10 +12077,6 @@ msgstr "Formaat wijzigen van commentaar"
 #: modules/visual_script/visual_script_editor.cpp
 msgid "Can't copy the function node."
 msgstr "Kan het functieknoop niet kopiëren."
-
-#: modules/visual_script/visual_script_editor.cpp
-msgid "Clipboard is empty!"
-msgstr "Plakbord is leeg!"
 
 #: modules/visual_script/visual_script_editor.cpp
 msgid "Paste VisualScript Nodes"
@@ -12299,9 +12327,8 @@ msgid "Unable to find Android SDK platform-tools' adb command."
 msgstr ""
 
 #: platform/android/export/export.cpp
-#, fuzzy
 msgid "Please check in the Android SDK directory specified in Editor Settings."
-msgstr "Ongeldig Android SDK pad voor custom build in Editor Settings."
+msgstr "Controleer de opgegeven Android SDK map in de Editor instellingen."
 
 #: platform/android/export/export.cpp
 msgid "Missing 'build-tools' directory!"
@@ -12804,9 +12831,8 @@ msgid "Preparing environment"
 msgstr "Omgeving aan het voorbereiden"
 
 #: scene/3d/baked_lightmap.cpp
-#, fuzzy
 msgid "Generating capture"
-msgstr "Bouw Lightmappen"
+msgstr "Lichtmappen genereren"
 
 #: scene/3d/baked_lightmap.cpp
 msgid "Saving lightmaps"
@@ -13236,6 +13262,13 @@ msgstr "Varyings kunnen alleen worden toegewezenin vertex functies."
 #: servers/visual/shader_language.cpp
 msgid "Constants cannot be modified."
 msgstr "Constanten kunnen niet worden aangepast."
+
+#~ msgid "An animation player can't animate itself, only other players."
+#~ msgstr ""
+#~ "Een animatiespeler kan zichzelf niet animeren, alleen andere spelers."
+
+#~ msgid "Clipboard is empty"
+#~ msgstr "Klembord is leeg"
 
 #~ msgid "No"
 #~ msgstr "Nee"

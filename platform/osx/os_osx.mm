@@ -1763,7 +1763,7 @@ Error OS_OSX::initialize(const VideoMode &p_desired, int p_video_driver, int p_a
 
 	if (gl_initialization_error) {
 		OS::get_singleton()->alert("Your video card driver does not support any of the supported OpenGL versions.\n"
-								   "Please update your drivers or if you have a very old or integrated GPU upgrade it.",
+								   "Please update your drivers or if you have a very old or integrated GPU, upgrade it.",
 				"Unable to initialize Video driver");
 		return ERR_UNAVAILABLE;
 	}
@@ -2297,8 +2297,7 @@ String OS_OSX::get_godot_dir_name() const {
 	return String(VERSION_SHORT_NAME).capitalize();
 }
 
-String OS_OSX::get_system_dir(SystemDir p_dir) const {
-
+String OS_OSX::get_system_dir(SystemDir p_dir, bool p_shared_storage) const {
 	NSSearchPathDirectory id;
 	bool found = true;
 
@@ -3327,6 +3326,12 @@ void OS_OSX::set_mouse_mode(MouseMode p_mode) {
 	ignore_warp = true;
 	warp_events.clear();
 	mouse_mode = p_mode;
+
+	if (mouse_mode == MOUSE_MODE_VISIBLE || mouse_mode == MOUSE_MODE_CONFINED) {
+		CursorShape p_shape = cursor_shape;
+		cursor_shape = OS::CURSOR_MAX;
+		set_cursor_shape(p_shape);
+	}
 }
 
 OS::MouseMode OS_OSX::get_mouse_mode() const {

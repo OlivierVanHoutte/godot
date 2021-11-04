@@ -426,10 +426,6 @@ msgid "Animation tracks can only point to AnimationPlayer nodes."
 msgstr "רצועות הנפשה יכולות להצביע רק על איברי AnimationPlayer."
 
 #: editor/animation_track_editor.cpp
-msgid "An animation player can't animate itself, only other players."
-msgstr "נגן הנפשה אינו יכול להנפיש את עצמו, רק שחקנים אחרים."
-
-#: editor/animation_track_editor.cpp
 msgid "Not possible to add a new track without a root"
 msgstr "אי אפשר להוסיף רצועה חדשה בלי שורש"
 
@@ -478,8 +474,9 @@ msgid "Anim Move Keys"
 msgstr "מפתחות הזזת אנימצייה"
 
 #: editor/animation_track_editor.cpp
-msgid "Clipboard is empty"
-msgstr "לוח העתקה ריק"
+#: modules/visual_script/visual_script_editor.cpp
+msgid "Clipboard is empty!"
+msgstr "לוח העתקה ריק!"
 
 #: editor/animation_track_editor.cpp
 msgid "Paste Tracks"
@@ -935,7 +932,7 @@ msgstr "מעבר למתודה"
 
 #: editor/create_dialog.cpp
 msgid "Change %s Type"
-msgstr "שנה את הסוג של s%"
+msgstr "שנה את הסוג של %s"
 
 #: editor/create_dialog.cpp editor/project_settings_editor.cpp
 msgid "Change"
@@ -987,7 +984,7 @@ msgid ""
 "Scene '%s' is currently being edited.\n"
 "Changes will only take effect when reloaded."
 msgstr ""
-"סצנה 's%' נמצאת כרגע בעריכה.\n"
+"סצנה '%s' נמצאת כרגע בעריכה.\n"
 "שינויים יכנסו לתוקף בטעינה מחדש."
 
 #: editor/dependency_editor.cpp
@@ -995,7 +992,7 @@ msgid ""
 "Resource '%s' is in use.\n"
 "Changes will only take effect when reloaded."
 msgstr ""
-"משאב 's%' נמצא בשימוש.\n"
+"משאב '%s' נמצא בשימוש.\n"
 "שינויים יכנסו לתוקף רק בטעינה מחדש."
 
 #: editor/dependency_editor.cpp
@@ -2508,7 +2505,7 @@ msgid "Save changes to the following scene(s) before quitting?"
 msgstr "לשמור את השינויים לסצנות הבאות לפני היציאה?"
 
 #: editor/editor_node.cpp
-msgid "Save changes the following scene(s) before opening Project Manager?"
+msgid "Save changes to the following scene(s) before opening Project Manager?"
 msgstr "לשמור את הסצנות הבאות לפני פתיחת מנהל המיזמים?"
 
 #: editor/editor_node.cpp
@@ -5217,9 +5214,10 @@ msgstr ""
 "ממאפייני BakedLightmap."
 
 #: editor/plugins/baked_lightmap_editor_plugin.cpp
+#, fuzzy
 msgid ""
-"No meshes to bake. Make sure they contain an UV2 channel and that the 'Bake "
-"Light' flag is on."
+"No meshes to bake. Make sure they contain an UV2 channel and that the 'Use "
+"In Baked Light' and 'Generate Lightmap' flags are on."
 msgstr "אין רשתות לאפייה. ודא/י שהם מכילים ערוץ UV2 והדגל 'Bake Light' מאופשר."
 
 #: editor/plugins/baked_lightmap_editor_plugin.cpp
@@ -7403,6 +7401,27 @@ msgid "View Plane Transform."
 msgstr ""
 
 #: editor/plugins/spatial_editor_plugin.cpp
+#: editor/plugins/texture_region_editor_plugin.cpp
+#: scene/resources/visual_shader.cpp
+msgid "None"
+msgstr ""
+
+#: editor/plugins/spatial_editor_plugin.cpp
+#, fuzzy
+msgid "Rotate"
+msgstr "הטיית מצולע"
+
+#. TRANSLATORS: This refers to the movement that changes the position of an object.
+#: editor/plugins/spatial_editor_plugin.cpp
+msgid "Translate"
+msgstr ""
+
+#: editor/plugins/spatial_editor_plugin.cpp
+#, fuzzy
+msgid "Scale"
+msgstr "קנה מידה:"
+
+#: editor/plugins/spatial_editor_plugin.cpp
 msgid "Scaling: "
 msgstr ""
 
@@ -8075,11 +8094,6 @@ msgstr ""
 
 #: editor/plugins/texture_region_editor_plugin.cpp
 msgid "Snap Mode:"
-msgstr ""
-
-#: editor/plugins/texture_region_editor_plugin.cpp
-#: scene/resources/visual_shader.cpp
-msgid "None"
 msgstr ""
 
 #: editor/plugins/texture_region_editor_plugin.cpp
@@ -11600,6 +11614,11 @@ msgid "GridMap Paint"
 msgstr "GridMap צביעה"
 
 #: modules/gridmap/grid_map_editor_plugin.cpp
+#, fuzzy
+msgid "GridMap Selection"
+msgstr "GridMap מילוי הבחירה"
+
+#: modules/gridmap/grid_map_editor_plugin.cpp
 msgid "Grid Map"
 msgstr "מפת רשת"
 
@@ -11849,6 +11868,16 @@ msgid "Add Output Port"
 msgstr "הוספת פורט יציאה"
 
 #: modules/visual_script/visual_script_editor.cpp
+#, fuzzy
+msgid "Change Port Type"
+msgstr "שינוי סוג"
+
+#: modules/visual_script/visual_script_editor.cpp
+#, fuzzy
+msgid "Change Port Name"
+msgstr "שינוי שם קלט"
+
+#: modules/visual_script/visual_script_editor.cpp
 msgid "Override an existing built-in function."
 msgstr "דריסה של פונקציה מובנת קיימת."
 
@@ -12021,10 +12050,6 @@ msgstr "שינוי גודל הערה"
 #: modules/visual_script/visual_script_editor.cpp
 msgid "Can't copy the function node."
 msgstr "לא ניתן להעתיק את פונקצית המפרק."
-
-#: modules/visual_script/visual_script_editor.cpp
-msgid "Clipboard is empty!"
-msgstr "לוח העתקה ריק!"
 
 #: modules/visual_script/visual_script_editor.cpp
 msgid "Paste VisualScript Nodes"
@@ -13164,6 +13189,12 @@ msgstr "ניתן להקצות שינויים רק בפונקצית vertex."
 #: servers/visual/shader_language.cpp
 msgid "Constants cannot be modified."
 msgstr "אי אפשר לשנות קבועים."
+
+#~ msgid "An animation player can't animate itself, only other players."
+#~ msgstr "נגן הנפשה אינו יכול להנפיש את עצמו, רק שחקנים אחרים."
+
+#~ msgid "Clipboard is empty"
+#~ msgstr "לוח העתקה ריק"
 
 #~ msgid "No"
 #~ msgstr "לא"

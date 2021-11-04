@@ -427,10 +427,6 @@ msgid "Animation tracks can only point to AnimationPlayer nodes."
 msgstr "แทร็กอนิเมชั่นสามารถติดไว้บนโหนด AnimationPlayer เท่านั้น"
 
 #: editor/animation_track_editor.cpp
-msgid "An animation player can't animate itself, only other players."
-msgstr "แทร็กอนิเมชั่นไม่สามารถเล่นตัวมันเองได้ แต่สามารถเล่นตัวเล่นอื่นได้"
-
-#: editor/animation_track_editor.cpp
 msgid "Not possible to add a new track without a root"
 msgstr "ไม่สามารถที่จะเพิ่มแทร็กใหม่โดยที่ไม่มีรูท"
 
@@ -475,8 +471,9 @@ msgid "Anim Move Keys"
 msgstr "ย้ายคีย์แอนิเมชัน"
 
 #: editor/animation_track_editor.cpp
-msgid "Clipboard is empty"
-msgstr "คลิปบอร์ดว่างเปล่า"
+#: modules/visual_script/visual_script_editor.cpp
+msgid "Clipboard is empty!"
+msgstr "คลิปบอร์ดว่างเปล่า!"
 
 #: editor/animation_track_editor.cpp
 msgid "Paste Tracks"
@@ -2483,7 +2480,7 @@ msgid "Save changes to the following scene(s) before quitting?"
 msgstr "บันทึกฉากต่อไปนี้ก่อนปิดโปรแกรมหรือไม่?"
 
 #: editor/editor_node.cpp
-msgid "Save changes the following scene(s) before opening Project Manager?"
+msgid "Save changes to the following scene(s) before opening Project Manager?"
 msgstr "บันทึกฉากต่อไปนี้ก่อนกลับสู่ตัวจัดการโปรเจกต์หรือไม่?"
 
 #: editor/editor_node.cpp
@@ -5128,9 +5125,10 @@ msgstr ""
 "ลองบันทึกฉากของคุณแล้วลองอีกครั้ง"
 
 #: editor/plugins/baked_lightmap_editor_plugin.cpp
+#, fuzzy
 msgid ""
-"No meshes to bake. Make sure they contain an UV2 channel and that the 'Bake "
-"Light' flag is on."
+"No meshes to bake. Make sure they contain an UV2 channel and that the 'Use "
+"In Baked Light' and 'Generate Lightmap' flags are on."
 msgstr ""
 "ไม่มีพื้นผิวให้สร้าง lightmap กรุณาตรวจสอบว่าพื้นผิวมี UV2 และได้เปิดใช้งาน 'Bake Light'"
 
@@ -7240,6 +7238,28 @@ msgid "View Plane Transform."
 msgstr "ดูระนาบการย้าย"
 
 #: editor/plugins/spatial_editor_plugin.cpp
+#: editor/plugins/texture_region_editor_plugin.cpp
+#: scene/resources/visual_shader.cpp
+msgid "None"
+msgstr "ไม่มี"
+
+#: editor/plugins/spatial_editor_plugin.cpp
+#, fuzzy
+msgid "Rotate"
+msgstr "รัฐ"
+
+#. TRANSLATORS: This refers to the movement that changes the position of an object.
+#: editor/plugins/spatial_editor_plugin.cpp
+#, fuzzy
+msgid "Translate"
+msgstr "เคลื่อนย้าย:"
+
+#: editor/plugins/spatial_editor_plugin.cpp
+#, fuzzy
+msgid "Scale"
+msgstr "อัตราส่วน:"
+
+#: editor/plugins/spatial_editor_plugin.cpp
 msgid "Scaling: "
 msgstr "อัตราส่วน: "
 
@@ -7889,11 +7909,6 @@ msgstr "ตั้งระยะขอบ"
 #: editor/plugins/texture_region_editor_plugin.cpp
 msgid "Snap Mode:"
 msgstr "โหมดสแนป:"
-
-#: editor/plugins/texture_region_editor_plugin.cpp
-#: scene/resources/visual_shader.cpp
-msgid "None"
-msgstr "ไม่มี"
 
 #: editor/plugins/texture_region_editor_plugin.cpp
 msgid "Pixel Snap"
@@ -11386,6 +11401,11 @@ msgid "GridMap Paint"
 msgstr "วาด GridMap"
 
 #: modules/gridmap/grid_map_editor_plugin.cpp
+#, fuzzy
+msgid "GridMap Selection"
+msgstr "เติมที่เลือกใน GridMap"
+
+#: modules/gridmap/grid_map_editor_plugin.cpp
 msgid "Grid Map"
 msgstr "จำกัดด้วยเส้นตาราง"
 
@@ -11629,6 +11649,16 @@ msgid "Add Output Port"
 msgstr "เพิ่มพอร์ตเอาท์พุต"
 
 #: modules/visual_script/visual_script_editor.cpp
+#, fuzzy
+msgid "Change Port Type"
+msgstr "เปลี่ยนชนิด"
+
+#: modules/visual_script/visual_script_editor.cpp
+#, fuzzy
+msgid "Change Port Name"
+msgstr "เปลี่ยนชื่อพอร์ตอินพุต"
+
+#: modules/visual_script/visual_script_editor.cpp
 msgid "Override an existing built-in function."
 msgstr "เขียนทับฟังก์ชันบิวท์อินที่มีอยู่"
 
@@ -11799,10 +11829,6 @@ msgstr "แก้ขนาดคอมเม้นต์"
 #: modules/visual_script/visual_script_editor.cpp
 msgid "Can't copy the function node."
 msgstr "คัดลอกโหนดฟังก์ชันไม่ได้"
-
-#: modules/visual_script/visual_script_editor.cpp
-msgid "Clipboard is empty!"
-msgstr "คลิปบอร์ดว่างเปล่า!"
 
 #: modules/visual_script/visual_script_editor.cpp
 msgid "Paste VisualScript Nodes"
@@ -12912,6 +12938,12 @@ msgstr "Varyings สามารถกำหนดในังก์ชันเ
 #: servers/visual/shader_language.cpp
 msgid "Constants cannot be modified."
 msgstr "ค่าคงที่ไม่สามารถแก้ไขได้"
+
+#~ msgid "An animation player can't animate itself, only other players."
+#~ msgstr "แทร็กอนิเมชั่นไม่สามารถเล่นตัวมันเองได้ แต่สามารถเล่นตัวเล่นอื่นได้"
+
+#~ msgid "Clipboard is empty"
+#~ msgstr "คลิปบอร์ดว่างเปล่า"
 
 #~ msgid ""
 #~ "InterpolatedCamera has been deprecated and will be removed in Godot 4.0."
@@ -14577,9 +14609,6 @@ msgstr "ค่าคงที่ไม่สามารถแก้ไขได
 
 #~ msgid "City"
 #~ msgstr "เมือง"
-
-#~ msgid "State"
-#~ msgstr "รัฐ"
 
 #~ msgid "2 letter country code"
 #~ msgstr "รหัสประเทศ 2 ตัวอักษร"

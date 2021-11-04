@@ -63,6 +63,9 @@ void BodySW::update_inertias() {
 			real_t total_area = 0;
 
 			for (int i = 0; i < get_shape_count(); i++) {
+				if (is_shape_disabled(i)) {
+					continue;
+				}
 
 				total_area += get_shape_area(i);
 			}
@@ -72,6 +75,10 @@ void BodySW::update_inertias() {
 
 			if (total_area != 0.0) {
 				for (int i = 0; i < get_shape_count(); i++) {
+					if (is_shape_disabled(i)) {
+						continue;
+					}
+
 					real_t area = get_shape_area(i);
 
 					real_t mass = area * this->mass / total_area;
@@ -622,7 +629,7 @@ void BodySW::integrate_velocities(real_t p_step) {
 	real_t ang_vel = total_angular_velocity.length();
 	Transform transform = get_transform();
 
-	if (ang_vel != 0.0) {
+	if (!Math::is_zero_approx(ang_vel)) {
 		Vector3 ang_vel_axis = total_angular_velocity / ang_vel;
 		Basis rot(ang_vel_axis, ang_vel * p_step);
 		Basis identity3(1, 0, 0, 0, 1, 0, 0, 0, 1);

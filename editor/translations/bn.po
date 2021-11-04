@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Godot Engine editor\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-06-11 14:49+0000\n"
-"Last-Translator: Mokarrom Hossain <mhb2016.bzs@gmail.com>\n"
+"PO-Revision-Date: 2021-08-03 06:20+0000\n"
+"Last-Translator: Oymate <dhruboadittya96@gmail.com>\n"
 "Language-Team: Bengali <https://hosted.weblate.org/projects/godot-engine/"
 "godot/bn/>\n"
 "Language: bn\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Weblate 4.7-dev\n"
+"X-Generator: Weblate 4.8-dev\n"
 
 #: core/math/expression.cpp modules/gdscript/gdscript_functions.cpp
 #: modules/visual_script/visual_script_builtin_funcs.cpp
@@ -415,10 +415,6 @@ msgid "Animation tracks can only point to AnimationPlayer nodes."
 msgstr "অ্যানিমেশন ট্র্যাকগুলি কেবল অ্যানিমেশনপ্লেয়ার নোডগুলিতে নির্দেশ করতে পারে।"
 
 #: editor/animation_track_editor.cpp
-msgid "An animation player can't animate itself, only other players."
-msgstr "একটি অ্যানিমেশন প্লেয়ার নিজেই অ্যানিমেট করতে পারে না, কেবল অন্য প্লেয়ার।"
-
-#: editor/animation_track_editor.cpp
 msgid "Not possible to add a new track without a root"
 msgstr "মূল ছাড়া নতুন ট্র্যাক যুক্ত করা সম্ভব নয়"
 
@@ -463,8 +459,10 @@ msgid "Anim Move Keys"
 msgstr "অ্যানিমেশনে (Anim) চাবি/কী-সমুহ সরান"
 
 #: editor/animation_track_editor.cpp
-msgid "Clipboard is empty"
-msgstr "ক্লীপবোর্ড খালি"
+#: modules/visual_script/visual_script_editor.cpp
+#, fuzzy
+msgid "Clipboard is empty!"
+msgstr "রিসোর্সের ক্লীপবোর্ড খালি!"
 
 #: editor/animation_track_editor.cpp
 msgid "Paste Tracks"
@@ -753,7 +751,7 @@ msgstr "সতর্কতা"
 
 #: editor/code_editor.cpp
 msgid "Line and column numbers."
-msgstr ""
+msgstr "রেখা ও স্তম্ভ সংখ্যা।"
 
 #: editor/connections_dialog.cpp
 #, fuzzy
@@ -2257,21 +2255,20 @@ msgstr "আউটপুট/ফলাফল"
 #: editor/editor_network_profiler.cpp editor/editor_node.cpp
 #: editor/editor_profiler.cpp
 msgid "Stop"
-msgstr "থামান"
+msgstr "থামো"
 
 #: editor/editor_network_profiler.cpp editor/editor_profiler.cpp
 #: editor/plugins/animation_state_machine_editor.cpp editor/rename_dialog.cpp
-#, fuzzy
 msgid "Start"
-msgstr "আরম্ভ!"
+msgstr "শুরু"
 
 #: editor/editor_network_profiler.cpp
 msgid "%s/s"
-msgstr ""
+msgstr "%s/সে"
 
 #: editor/editor_network_profiler.cpp
 msgid "Down"
-msgstr "নীচে"
+msgstr "নিচে"
 
 #: editor/editor_network_profiler.cpp
 msgid "Up"
@@ -2279,7 +2276,7 @@ msgstr "উপরে"
 
 #: editor/editor_network_profiler.cpp editor/editor_node.cpp
 msgid "Node"
-msgstr "নোড"
+msgstr "শাখা"
 
 #: editor/editor_network_profiler.cpp
 msgid "Incoming RPC"
@@ -2609,7 +2606,7 @@ msgid "Save changes to the following scene(s) before quitting?"
 msgstr "বন্ধ করার পূর্বে পরিবর্তনসমূহ (সিন) সংরক্ষণ করবেন?"
 
 #: editor/editor_node.cpp
-msgid "Save changes the following scene(s) before opening Project Manager?"
+msgid "Save changes to the following scene(s) before opening Project Manager?"
 msgstr "প্রজেক্ট ম্যানেজার ওপেন করার পূর্বে পরিবর্তনসমূহ (সিন) সংরক্ষণ করবেন?"
 
 #: editor/editor_node.cpp
@@ -4079,7 +4076,7 @@ msgstr "পুনঃনামকরণ করুন"
 
 #: editor/filesystem_dock.cpp
 msgid "Overwrite"
-msgstr ""
+msgstr "প্রতিস্থাপন"
 
 #: editor/filesystem_dock.cpp
 #, fuzzy
@@ -5528,8 +5525,8 @@ msgstr ""
 
 #: editor/plugins/baked_lightmap_editor_plugin.cpp
 msgid ""
-"No meshes to bake. Make sure they contain an UV2 channel and that the 'Bake "
-"Light' flag is on."
+"No meshes to bake. Make sure they contain an UV2 channel and that the 'Use "
+"In Baked Light' and 'Generate Lightmap' flags are on."
 msgstr ""
 
 #: editor/plugins/baked_lightmap_editor_plugin.cpp
@@ -7816,6 +7813,29 @@ msgid "View Plane Transform."
 msgstr "প্লেন-এর রুপান্তর দেখুন।"
 
 #: editor/plugins/spatial_editor_plugin.cpp
+#: editor/plugins/texture_region_editor_plugin.cpp
+#: scene/resources/visual_shader.cpp
+#, fuzzy
+msgid "None"
+msgstr "<নান/কিছুই না>"
+
+#: editor/plugins/spatial_editor_plugin.cpp
+#, fuzzy
+msgid "Rotate"
+msgstr "প্রদেশ/রাজ্য"
+
+#. TRANSLATORS: This refers to the movement that changes the position of an object.
+#: editor/plugins/spatial_editor_plugin.cpp
+#, fuzzy
+msgid "Translate"
+msgstr "স্থানান্তর (Translate):"
+
+#: editor/plugins/spatial_editor_plugin.cpp
+#, fuzzy
+msgid "Scale"
+msgstr "স্কেল/মাপ:"
+
+#: editor/plugins/spatial_editor_plugin.cpp
 #, fuzzy
 msgid "Scaling: "
 msgstr "স্কেল/মাপ:"
@@ -8521,12 +8541,6 @@ msgstr "হ্যান্ডেল স্থাপন করুন"
 #: editor/plugins/texture_region_editor_plugin.cpp
 msgid "Snap Mode:"
 msgstr "স্ন্যাপ মোড:"
-
-#: editor/plugins/texture_region_editor_plugin.cpp
-#: scene/resources/visual_shader.cpp
-#, fuzzy
-msgid "None"
-msgstr "<নান/কিছুই না>"
 
 #: editor/plugins/texture_region_editor_plugin.cpp
 msgid "Pixel Snap"
@@ -11129,7 +11143,7 @@ msgstr "অ্যানিমেশনের সিদ্ধান্তসম�
 
 #: editor/rename_dialog.cpp
 msgid "Substitute"
-msgstr ""
+msgstr "প্রতিস্থাপন"
 
 #: editor/rename_dialog.cpp
 #, fuzzy
@@ -12127,7 +12141,7 @@ msgstr ""
 
 #: modules/gdnative/gdnative_library_editor_plugin.cpp
 msgid "Platform:"
-msgstr ""
+msgstr "প্ল্যাটফর্ম:"
 
 #: modules/gdnative/gdnative_library_editor_plugin.cpp
 #, fuzzy
@@ -12253,6 +12267,11 @@ msgstr "নির্বাচিত সমূহ অপসারণ করুন
 #, fuzzy
 msgid "GridMap Paint"
 msgstr "স্ন্যাপ সেটিংস"
+
+#: modules/gridmap/grid_map_editor_plugin.cpp
+#, fuzzy
+msgid "GridMap Selection"
+msgstr "নির্বাচিত সমূহ অপসারণ করুন"
 
 #: modules/gridmap/grid_map_editor_plugin.cpp
 #, fuzzy
@@ -12536,6 +12555,16 @@ msgstr "ইনপুট যোগ করুন"
 
 #: modules/visual_script/visual_script_editor.cpp
 #, fuzzy
+msgid "Change Port Type"
+msgstr "ধরণ পরিবর্তন করুন"
+
+#: modules/visual_script/visual_script_editor.cpp
+#, fuzzy
+msgid "Change Port Name"
+msgstr "ইনপুট নাম পরিবর্তন করুন"
+
+#: modules/visual_script/visual_script_editor.cpp
+#, fuzzy
 msgid "Override an existing built-in function."
 msgstr ""
 "অগ্রহনযোগ্য নাম। নামটি অবশ্যই বিদ্যমান পূর্বনির্মিত ধরণের নামের সাথে পরম্পরবিরোধী "
@@ -12734,11 +12763,6 @@ msgstr "CanvasItem সম্পাদন করুন"
 #, fuzzy
 msgid "Can't copy the function node."
 msgstr "'..' তে পরিচালনা করা সম্ভব নয়"
-
-#: modules/visual_script/visual_script_editor.cpp
-#, fuzzy
-msgid "Clipboard is empty!"
-msgstr "রিসোর্সের ক্লীপবোর্ড খালি!"
 
 #: modules/visual_script/visual_script_editor.cpp
 #, fuzzy
@@ -13862,6 +13886,12 @@ msgstr ""
 #: servers/visual/shader_language.cpp
 msgid "Constants cannot be modified."
 msgstr ""
+
+#~ msgid "An animation player can't animate itself, only other players."
+#~ msgstr "একটি অ্যানিমেশন প্লেয়ার নিজেই অ্যানিমেট করতে পারে না, কেবল অন্য প্লেয়ার।"
+
+#~ msgid "Clipboard is empty"
+#~ msgstr "ক্লীপবোর্ড খালি"
 
 #, fuzzy
 #~ msgid "No"
@@ -15559,9 +15589,6 @@ msgstr ""
 
 #~ msgid "City"
 #~ msgstr "শহর"
-
-#~ msgid "State"
-#~ msgstr "প্রদেশ/রাজ্য"
 
 #~ msgid "2 letter country code"
 #~ msgstr "২ অক্ষরে দেশের কোড"
